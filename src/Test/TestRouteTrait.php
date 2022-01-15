@@ -91,19 +91,26 @@ trait TestRouteTrait {
         $responses = [];
         $paths = [];
         $exclude_patterns = "/(".(implode("|", $exclude_pattern)).")/i";
+        
+        // Get all laravel routes. Similar to the laravel artisan route:list command
         $routeCollection = Route::getRoutes();
 
         foreach ($routeCollection as $value) {
 
+            // if route middleware does not match the given middleware skip the current iterated route 
             $middlewares = $value->middleware();
             if ( !empty($middleware) && ! in_array($middleware, $middlewares) ) {
                 continue;
             }
 
+            // Get the route info, path and name
             $paths[] = $path = $value->uri();
             $name = $value->getName();
+            
+            // ignore patterns that need a variable
             $pattern = $pattern = "/\{.*\}/i";
 
+            // test only GET routes
             if ( in_array('GET', $value->methods() ) &&
                  ! preg_match($pattern, $path) &&
                 ! empty($name) &&
