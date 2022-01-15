@@ -2,6 +2,8 @@
 
 namespace Osoobe\LaravelTraits\Test;
 
+use Illuminate\Support\Facades\Route;
+
 trait TestRouteTrait {
 
     /**
@@ -13,13 +15,13 @@ trait TestRouteTrait {
         $response = $this->get($path);
 
         if ( empty($status_code) ) {
-            $status_code = [200, 201, 202, 301];
+            $status_code = [200, 201, 202, 301, 302];
         } else if ( ! is_array($status_code) ) {
             $status_code = [$status_code];
         }
 
         $this->assertIsArray($status_code);
-        $this->assertContains($status_code, $response->getStatusCode(), "(path: $message $path) ");
+        $this->assertContains( (int) $response->getStatusCode(), $status_code, "(path: $message $path) ");
         return $response;
     }
 
@@ -32,26 +34,35 @@ trait TestRouteTrait {
      *      $this->checkPages([ '/home', 200 ])
      *      $this->checkPages([ '/home', [200, 201, 301] ])
      *      $this->checkPages([ '/home', 200, function($response) { $response->assertOk() } ])
-     * @return void
+     * @return object|array
      */
     public function checkRoutes(...$pages) {
+        $responses = [];
+        $paths = [];
         foreach($pages as $path) {
             if ( is_array($path) ) {
                 
                 if ( count($path) > 1 ) {
-                    $response = $this->checkRoute($path[0], $path[1]);
+                    $responses[] = $response = $this->checkRoute($path[0], $path[1]);
                 } else {
-                    $response = $this->checkRoute($path[0]);
+                    $responses[] = $response = $this->checkRoute($path[0]);
                 }
 
             } else {
-                $response = $this->checkRoute($path);
+                $responses[] = $response = $this->checkRoute($path);
             }
+
+            $paths[] = $path[0];
             if ( !empty($path[2]) ) {
                 $callback = $path[2];
                 $callback($response);
             }
         }
+
+        return (object) [
+            'responses' => $responses,
+            'paths' => $paths
+        ];
     }
 
 
@@ -62,10 +73,50 @@ trait TestRouteTrait {
      * @param string $redirect      Expected URL path the user will be redirected to after login
      * @return \Illuminate\Testing\TestResponse $response
      */
-    protected function setUpUserLogin(string $redirect='/') {
-        $response = $this->actingAs($this->user)->get('/login');
+    protected function setUpUserLogin($user, string $redirect='/') {
+        $response = $this->actingAs($user)->get('/login');
         $response->assertRedirect($redirect);
         return $response;
+    }
+
+    /**
+     * Test define routes
+     *
+     * @param string $middleware            Set the route middleware to test
+     * @param array $exclude_pattern        Exlude url paths based on the given pattern
+     * @return object|array
+     */
+    protected function checkDefinedRoutes(string $middleware='web', array $exclude_pattern=[]) {
+
+        $responses = [];
+        $paths = [];
+        $exclude_patterns = "/(".(implode("|", $exclude_pattern)).")/i";
+        $routeCollection = Route::getRoutes();
+
+        foreach ($routeCollection as $value) {
+
+            $middlewares = $value->middleware();
+            if ( !empty($middleware) && ! in_array($middleware, $middlewares) ) {
+                continue;
+            }
+
+            $paths[] = $path = $value->uri();
+            $name = $value->getName();
+            $pattern = $pattern = "/\{.*\}/i";
+
+            if ( in_array('GET', $value->methods() ) &&
+                 ! preg_match($pattern, $path) &&
+                ! empty($name) &&
+                ! preg_match($exclude_patterns, $path)
+            ) {
+                $responses[] = $this->checkRoute($path);
+            }
+        }
+
+        return (object) [
+            'responses' => $responses,
+            'paths' => $paths
+        ];
     }
 
 }
