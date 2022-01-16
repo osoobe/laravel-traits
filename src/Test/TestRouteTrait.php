@@ -84,9 +84,10 @@ trait TestRouteTrait {
      *
      * @param string $middleware            Set the route middleware to test
      * @param array $exclude_pattern        Exlude url paths based on the given pattern
+     * @param array $status_codes           Response status codes
      * @return object|array
      */
-    protected function checkDefinedRoutes(string $middleware='web', array $exclude_pattern=[]) {
+    protected function checkDefinedRoutes(string $middleware='web', array $exclude_pattern=[], $isMatchFn=null, $status_codes=[]) {
 
         $responses = [];
         $paths = [];
@@ -103,6 +104,12 @@ trait TestRouteTrait {
                 continue;
             }
 
+            if ( is_callable($isMatchFn) ) {
+                if ( ! $isMatchFn($value) ) {
+                    continue;
+                }
+            }
+
             // Get the route info, path and name
             $paths[] = $path = $value->uri();
             $name = $value->getName();
@@ -116,7 +123,7 @@ trait TestRouteTrait {
                 ! empty($name) &&
                 ! preg_match($exclude_patterns, $path)
             ) {
-                $responses[] = $this->checkRoute($path);
+                $responses[] = $this->checkRoute($path, $status_codes);
             }
         }
 
