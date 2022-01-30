@@ -64,13 +64,16 @@ trait HasFiles {
     public function privateDisk() {
         $folder = $this->getFolderPath();
 
+        $path = storage_path("app/private/$folder");
+        $this->makeStorePath($path);
+
         // Storage::build is only available in Laravel 8
         // As a result, this function will return an array if the
         // Storage::build does not exist.
         if ( method_exists(Storage::class, 'build') ) {
             return Storage::build([
                 'driver' => 'local',
-                'root' => storage_path("app/private/$folder"),
+                'root' => $path,
                 'url' => env('APP_URL').'/storage',
                 'visibility' => 'private',
             ]);
@@ -78,7 +81,7 @@ trait HasFiles {
 
         return [
             'disk_relative_path' => $folder,
-            'absolute_path' => storage_path("app/private/$folder")
+            'absolute_path' => $path
         ];
     }
 
@@ -90,20 +93,23 @@ trait HasFiles {
     public function publicDisk() {
         $folder = $this->getFolderPath();
 
+        $path = storage_path("app/private/$folder");
+        $this->makeStorePath($path);
+
         // Storage::build is only available in Laravel 8
         // As a result, this function will return an array if the
         // Storage::build does not exist.
         if ( method_exists(Storage::class, 'build') ) {
             return Storage::build([
                 'driver' => 'local',
-                'root' => storage_path("app/public/$folder"),
+                'root' => $path,
                 'url' => env('APP_URL').'/storage',
                 'visibility' => 'private',
             ]);
         }
         return [
             'disk_relative_path' => $folder,
-            'absolute_path' => storage_path("app/public/$folder")
+            'absolute_path' => $path
         ];
     }
 
