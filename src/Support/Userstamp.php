@@ -6,6 +6,26 @@ use Illuminate\Support\Facades\Auth;
 
 trait Userstamp {
 
+
+    /**
+     * Get creator
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
+    public function creator() {
+        return $this->morphTo();
+    }
+
+    /**
+     * Get editor
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
+    public function editor() {
+        return $this->morphTo();
+    }
+    
+
     /**
      * Create Notification Settings.
      *
