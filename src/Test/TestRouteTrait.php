@@ -21,7 +21,9 @@ trait TestRouteTrait {
         }
 
         $this->assertIsArray($status_code);
-        $this->assertContains( (int) $response->getStatusCode(), $status_code, "(path: $message $path) ");
+        $this->assertContains( 
+            (int) $response->getStatusCode(), 
+            $status_code, "(path: $message $path) status code: ".implode(",", $status_code));
         return $response;
     }
 
@@ -41,22 +43,20 @@ trait TestRouteTrait {
         $paths = [];
         foreach($pages as $path) {
             if ( is_array($path) ) {
-                
                 if ( count($path) > 1 ) {
                     $responses[] = $response = $this->checkRoute($path[0], $path[1]);
                 } else {
                     $responses[] = $response = $this->checkRoute($path[0]);
                 }
-
+                if ( !empty($path[2]) ) {
+                    $callback = $path[2];
+                    $callback($response);
+                }
             } else {
                 $responses[] = $response = $this->checkRoute($path);
             }
 
             $paths[] = $path[0];
-            if ( !empty($path[2]) ) {
-                $callback = $path[2];
-                $callback($response);
-            }
         }
 
         return (object) [
