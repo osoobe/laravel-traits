@@ -15,11 +15,11 @@ trait HasFiles {
      * @return array
      */
     public function getStorePath($disk='public') {
-        $folder = $this->getFolderPath();
+        $folder = $this->kekabPath();
         $disk_obj = Storage::disk($disk);
         $path = $disk_obj->path($folder);
         $this->makeStorePath($path);
-        return (object) [
+        return [
             'disk_relative_path' => $folder,
             'disk' => $disk_obj,
             'absolute_path' => $path
@@ -44,25 +44,105 @@ trait HasFiles {
         return false;
     }
 
+
     /**
-     * Return folder path
+     * Kebab Path with id
      *
      * @return string
      */
-    public function getFolderPath() {
+    public function kekabPath() {
         $class = Utilities::getClassNameOnly(get_class($this));
         $class = Str::kebab($class);
-        $folder = "$class/tenant-$this->id";
-        return $folder;
+        $plural = Str::plural($class);
+        return "$plural/$class-$this->id";
     }
 
+
+    /**
+     * Store files in the public folder
+     *
+     * @param string $paths
+     * @param string|resource $contents
+     * @param string $disk
+     * @param mixed $options
+     * @return bool
+     */
+    public function storeFile(string $paths, $contents, $disk='public', $options=[]) {
+        $folder = $this->kekabPath();
+        $paths = $folder.'/'.rtrim($paths, '/');
+        return Storage::disk($disk)->put($paths, $contents, $options);
+    }
+
+
+    /**
+     * Store files in the public folder
+     * 
+     * @uses HasFiles::storePath
+     *
+     * @param string $paths
+     * @param string|resource $contents
+     * @param mixed $options
+     * @return bool
+     */
+    public function storePrivateFile(string $paths, $contents, $options=[]) {
+        return $this->storeFile($paths, $contents, 'private', $options);
+    }
+
+    /**
+     * Store files in the public folder
+     * 
+     * @uses HasFiles::storePath
+     *
+     * @param string $paths
+     * @param string|resource $contents
+     * @param mixed $options
+     * @return bool
+     */
+    public function storePublicFile(string $paths, $contents, $options=[]) {
+        return $this->storeFile($paths, $contents, 'public', $options);
+    }
+
+
+    /**
+     * Kebab Path with id
+     *
+     * @deprecated 1.5.0
+     * @return string
+     */
+    public function getFolderPath() {
+        return $this->kekabPath();
+    }
+
+    /**
+     * Get private file
+     *
+     * @param string $filename
+     * @return string
+     */
+    public function getPrivateFile($filename) {
+        $path = $this->getStorePath('private');
+        return $path['absolute_path'].'/'.rtrim($filename, '/');
+    }
+
+
+    /**
+     * Get public file
+     *
+     * @param string $filename
+     * @return string
+     */
+    public function getPublicFile($filename) {
+        $path = $this->getStorePath('public');
+        return $path['absolute_path'].'/'.rtrim($filename, '/');
+    }
+    
     /**
      * Return private disk or path
      *
      * @return \Illuminate\Contracts\Filesystem\Filesystem|array 
      */
     public function privateDisk() {
-        $folder = $this->getFolderPath();
+        $folder = $this->kekabPath();
 
         $path = storage_path("app/private/$folder");
         $this->makeStorePath($path);
@@ -91,7 +171,7 @@ trait HasFiles {
      * @return \Illuminate\Contracts\Filesystem\Filesystem|array 
      */
     public function publicDisk() {
-        $folder = $this->getFolderPath();
+        $folder = $this->kekabPath();
 
         $path = storage_path("app/private/$folder");
         $this->makeStorePath($path);

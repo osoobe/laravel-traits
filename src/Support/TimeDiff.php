@@ -237,6 +237,17 @@ trait TimeDiff {
         }
     }
 
+    /**
+     * Check if the model was recently created.
+     * Default is 5 minutes.
+     *
+     * @param integer $minutes
+     * @return bool
+     */
+    public function justCreated($minutes=5) {
+        return $this->recentlyCreated($minutes, 'subMinutes');
+    }
+
 
     /**
      * Check if the model was recently updated.
