@@ -4,6 +4,15 @@ namespace  Osoobe\LaravelTraits\Support;
 
 trait HasFullTextSearch {
 
+    /**
+     * Full text search
+     *
+     * @param mixed $query
+     * @param array $columns
+     * @param string $text
+     * @param boolean $boolMode
+     * @return mixed
+     */
     public function scopeFullTextSearch($query, array $columns, string $text, bool $boolMode=false) {
         return $query->whereRaw(
             self::buildFullTextSearch($columns, $text, $boolMode)

@@ -32,6 +32,25 @@ trait TimeDiff {
         }
     }
 
+
+    /**
+     * Get the time difference between the current date and
+     * the created date.
+     *
+     * @uses Carbon\Carbon::diffForHumans
+     * @example $this->posted_time_diff  1 day ago.
+     * @return string
+     */
+    public function getUpdatedTimeDiffAttribute() {
+        try {
+            return $this->updated_at->diffForHumans(
+                ['options' => Carbon::JUST_NOW]
+            );
+        } catch (\Throwable $th) {
+            return "Non-Disclosure ";
+        }
+    }
+
     public function formatDateField($field) {
         if ( empty($this->$field) ) {
             return '';

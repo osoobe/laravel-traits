@@ -42,12 +42,23 @@ trait HasLocation {
     /**
      * Get the given object's street, city, state and country address.
      *
+     * @param string $delimiter
+     * @param bool $exclude_zip     Exclude zip code
      * @return string
      */
-    public function getFullAddress() {
-        $street_address = Utilities::getObjectValue($this, 'street_address', '');
-        $city_address = $this->getCityAddress();
-        return "$street_address $city_address";
+    public function getFullAddress(string $delimiter=null, bool $exclude_zip=true) {
+        $string = "";
+        $address_array = $this->getAddressArray();
+        unset($address_array['country']);
+        if ( $exclude_zip ) {
+            unset($address_array['zip']);
+        }
+        foreach($address_array as $text) {
+            if ( !empty($text) ) {
+                $string .= $text.$delimiter." ";
+            }
+        }
+        return trim($string)." $this->country";
     }
 
 
@@ -57,9 +68,7 @@ trait HasLocation {
      * @return string
      */
     public function getFullAddressWithZipCode() {
-        $zip_code = Utilities::getObjectValue($this, 'zip_code', '');
-        $full_address = $this->getFullAddress();
-        return "$full_address $zip_code";
+        return $this->getFullAddress(null, false);
     }
 
     public function getGoogleMapLinkAttribute() {
@@ -70,7 +79,7 @@ trait HasLocation {
     /**
      * Get address data as array
      *
-     * @return void
+     * @return array
      */
     public function getAddressArray() {
         return [
