@@ -30,9 +30,9 @@ trait ToString {
      */
     public function propertyToString(string $delimiter="\n", string $format=null, string ...$strings): string {
         $string = "";
-        $func = function ($value) use($delimiter, $format) {
+        $func = function ($property, $value) use($delimiter, $format) {
             if ( is_string($value) ) {
-                return FormatHelper::formatString($value, $format, Str::headline($value))
+                return FormatHelper::formatString($value, $format, Str::headline($property))
                     .$delimiter;
             }elseif ( method_exists($value, 'toString') ) {
                 try {
@@ -46,12 +46,12 @@ trait ToString {
 
         foreach($strings as $property) {
             if ( property_exists($this, $property)) {
-                $string .= $func($this->property);
+                $string .= $func($property, $this->property);
             } elseif ( method_exists($this, $property) ) {
                 $string .= $this->$property($delimiter, $format);
             } else {
                 try {
-                    $string .= $func($this->$property);
+                    $string .= $func($property, $this->$property);
                 } catch (\Throwable $th) {
                     logger($th->getMessage());
                 }
