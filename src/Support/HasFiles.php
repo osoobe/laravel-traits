@@ -9,6 +9,17 @@ use Osoobe\Utilities\Helpers\Str;
 trait HasFiles {
 
     /**
+     * Download file
+     *
+     * @param string $path
+     * @param string $disk
+     * @return mixed
+     */
+    public function downloadFile(string $path, string $disk='public') {
+        return Storage::disk($disk)->download($path);
+    }
+
+    /**
      * Return folder path
      *
      * @param string $disk
