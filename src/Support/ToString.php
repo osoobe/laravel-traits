@@ -24,7 +24,7 @@ trait ToString {
      * Execute multiple toString for model attributes
      *
      * @param string $delimiter
-     * @param string $format
+     * @param string|null $format
      * @param string ...$strings
      * @return string
      */
