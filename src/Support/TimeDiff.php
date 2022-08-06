@@ -242,8 +242,8 @@ trait TimeDiff {
      * @param string $column
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOlderThan($query, int $time=3, string $column='updated_at') {
-        return $query->whereDate($column, '<=',  Carbon::now()->subDays($time));
+    public function scopeOlderThan($query, int $days=3, string $column='updated_at') {
+        return $query->whereDate($column, '<=',  Carbon::now()->subDays($days));
     }
 
 
