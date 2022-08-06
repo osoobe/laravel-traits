@@ -233,6 +233,19 @@ trait TimeDiff {
         }
     }
 
+    /**
+     * Scope a query for objects that were created within the last given days.
+     * Default is 3 days.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param int $days     Within the last given days
+     * @param string $column
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOlderThan($query, int $time=3, string $column='updated_at') {
+        return $query->whereDate($column, '<=',  Carbon::now()->subDays($time));
+    }
+
 
     /**
      * Scope a query for objects that were created today.
