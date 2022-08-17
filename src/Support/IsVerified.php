@@ -2,7 +2,7 @@
 
 namespace  Osoobe\LaravelTraits\Support;
 
-trait HasVerified
+trait IsVerified
 {
 
     /**
