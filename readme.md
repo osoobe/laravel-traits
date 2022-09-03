@@ -1,5 +1,7 @@
 # laravel-traits
 
+A collection of reusable Laravel Traits.
+
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Travis](https://img.shields.io/travis/osoobe/laravel-traits.svg?style=flat-square)]()
 [![Total Downloads](https://img.shields.io/packagist/dt/osoobe/laravel-traits.svg?style=flat-square)](https://packagist.org/packages/osoobe/laravel-traits)
@@ -7,8 +9,23 @@
 ## Install
 `composer require osoobe/laravel-traits`
 
-## Usage
-Write a few lines about the usage of this package.
+## Traits
+
+- ***Active***
+- ***BelongsToUser***
+- ***HasEmail***
+- ***HasFiles***
+- ***HasFullTextSearch***
+- ***HasLang***
+- ***HasLocation***
+- ***HasPhoneNumber***
+- ***IsDefault***
+- ***IsVerified***
+- ***SEO***
+- ***TimeDiff***
+- ***ToString***
+- ***Userstamp***
+
 
 ## Testing
 Run the tests with:
