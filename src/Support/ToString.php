@@ -51,7 +51,7 @@ trait ToString {
                 $string .= $this->$property($delimiter, $format);
             } else {
                 try {
-                    $string .= $func($property, $this->$property);
+                    $string .= $func($property, (string) $this->$property);
                 } catch (\Throwable $th) {
                     logger($th->getMessage());
                 }
