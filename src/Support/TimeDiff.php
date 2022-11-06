@@ -383,6 +383,66 @@ trait TimeDiff {
         return $query->whereDate('created_at', '>=',  Carbon::now()->subMinutes($mins));
     }
 
+
+
+    public function scopeTimeFrequencey($query, $frequency, $subtract=0, $field='created_at') {
+        $subFn = "sub".ucfirst($frequency).'s';
+        $startFn = "startOf".ucfirst($frequency);
+        $endFn = "endOf".ucfirst($frequency);
+
+        $date = now()->$subFn($subtract);
+
+        return $query->where(function($query2) use($date, $startFn, $endFn, $field) {
+            return $query2->whereDate($field, '>=',  $date->$startFn() )
+                ->whereDate($field, '<=',  $date->copy()->$endFn() );
+        });
+    }
+
+    public function scopeMinutely($query, $subtract=0, $field='created_at') {
+        return $query->timeFrequency($query, 'minute', $subtract, $field);
+    }
+
+    public function scopeHourly($query, $hours=0) {
+        $date = now()->subHours($hours);
+        return $query->where(function($query2) use($date) {
+            return $query2->whereDate('created_at', '>=',  $date->startOfHour() )
+                ->whereDate('created_at', '<=',  $date->copy()->endOfHour() );
+        });
+    }
+
+    public function scopeDaily($query, $days=0) {
+        $date = now()->subDays($days);
+        return $query->where(function($query2) use($date) {
+            return $query2->whereDate('created_at', '>=',  $date->startOfDay() )
+                ->whereDate('created_at', '<=',  $date->copy()->endOfDay() );
+        });
+    }
+
+    public function scopeWeekly($query, $weeks=0) {
+        $date = now()->subWeeks($weeks);
+        return $query->where(function($query2) use($date) {
+            return $query2->whereDate('created_at', '>=',  $date->startOfWeek() )
+                ->whereDate('created_at', '<=',  $date->copy()->endOfWeek() );
+        });
+    }
+
+    public function scopeMonthly($query, $months=0) {
+        $date = now()->subMonths($months);
+        return $query->where(function($query2) use($date) {
+            return $query2->whereDate('created_at', '>=',  $date->startOfMonth() )
+                ->whereDate('created_at', '<=',  $date->copy()->endOfMonth() );
+        });
+    }
+
+    public function scopeYearly($query, $months=0) {
+        $date = now()->subYears($months);
+        return $query->where(function($query2) use($date) {
+            return $query2->whereDate('created_at', '>=',  $date->startOfYear() )
+                ->whereDate('created_at', '<=',  $date->copy()->endOfYear() );
+        });
+    }
+
+
 }
 
 ?>
