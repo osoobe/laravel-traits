@@ -264,6 +264,21 @@ trait TimeDiff {
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
+    public function scopeCreatedDate($query, Carbon $date=null) {
+        if ( empty($date) ) {
+            $date = Carbon::now();
+        }
+        return $query->whereDate('created_at', '>=',  $date->startOfDay() )
+        ->whereDate('created_at', '<=',  $date->endOfDay() );
+    }
+
+
+    /**
+     * Scope a query for objects that were created today.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeCreatedWeek($query, Carbon $date=null) {
         if ( empty($date) ) {
             $date = Carbon::now();
@@ -444,5 +459,3 @@ trait TimeDiff {
 
 
 }
-
-?>
