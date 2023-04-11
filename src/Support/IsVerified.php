@@ -27,4 +27,13 @@ trait IsVerified
         return $query->where('verified', '!=', 1);
     }
 
+    /**
+     * Is verified
+     *
+     * @return boolean
+     */
+    public function getIsVerifiedAttribute(): bool {
+        return (bool) $this->verified;
+    }
+
 }
