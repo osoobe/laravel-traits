@@ -84,8 +84,8 @@ trait HasLocation {
     public function getAddressArray() {
         return [
             "street" => $this->street_address,
-            "state" => $this->state,
             "city" => $this->city,
+            "state" => $this->state,
             "zip" => $this->zip_code,
             "country" => $this->country,
         ];
