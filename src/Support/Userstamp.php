@@ -24,7 +24,7 @@ trait Userstamp {
     public function editor() {
         return $this->morphTo();
     }
-    
+
 
     /**
      * Create Notification Settings.
@@ -42,6 +42,7 @@ trait Userstamp {
                 $model->editor_type = get_class($user);
             }
         });
+
         static::updating(function ($model) {
             $user = Auth::user();
             if ( $user ) {
