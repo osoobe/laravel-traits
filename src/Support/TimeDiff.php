@@ -172,7 +172,7 @@ trait TimeDiff {
         if ( !isset($this->expiry_date)) {
             return $query;
         }
-        return $query->whereDate('expiry_date', '<',  Carbon::now());
+        return $query->where('expiry_date', '<',  Carbon::now());
     }
 
 
@@ -186,7 +186,7 @@ trait TimeDiff {
         if ( !isset($this->expiry_date)) {
             return $query;
         }
-        return $query->whereDate('expiry_date', '>=',  Carbon::now());
+        return $query->where('expiry_date', '>=',  Carbon::now());
     }
 
 
@@ -197,7 +197,7 @@ trait TimeDiff {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCreatedSinceWeek($query) {
-        return $query->whereDate('created_at', '>=',  Carbon::now()->subDays(7));
+        return $query->where('created_at', '>=',  Carbon::now()->subDays(7));
     }
 
 
@@ -211,9 +211,9 @@ trait TimeDiff {
      */
     public function scopeRecentlyCreated($query, int $time=3, string $carbon_fn = 'subDays') {
         try {
-            return $query->whereDate('created_at', '>=',  Carbon::now()->$carbon_fn($time));
+            return $query->where('created_at', '>=',  Carbon::now()->$carbon_fn($time));
         } catch (\Throwable $th) {
-            return $query->whereDate('created_at', '>=', Carbon::now()->subDays($time));
+            return $query->where('created_at', '>=', Carbon::now()->subDays($time));
         }
     }
 
@@ -227,9 +227,9 @@ trait TimeDiff {
      */
     public function scopeRecentlyUpdated($query, int $time=3, string $carbon_fn = 'subDays') {
         try {
-            return $query->whereDate('updated_at', '>=',  Carbon::now()->$carbon_fn($time));
+            return $query->where('updated_at', '>=',  Carbon::now()->$carbon_fn($time));
         } catch (\Throwable $th) {
-            return $query->whereDate('updated_at', '>=', Carbon::now()->subDays($time));
+            return $query->where('updated_at', '>=', Carbon::now()->subDays($time));
         }
     }
 
@@ -243,7 +243,7 @@ trait TimeDiff {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOlderThan($query, int $days=3, string $column='updated_at') {
-        return $query->whereDate($column, '<=',  Carbon::now()->subDays($days));
+        return $query->where($column, '<=',  Carbon::now()->subDays($days));
     }
 
 
@@ -254,7 +254,7 @@ trait TimeDiff {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCreatedToday($query) {
-        return $query->whereDate('created_at', '>=',  Carbon::now()->startOfDay() );
+        return $query->where('created_at', '>=',  Carbon::now()->startOfDay() );
     }
 
 
@@ -268,8 +268,8 @@ trait TimeDiff {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
-        return $query->whereDate('created_at', '>=',  $date->startOfDay() )
-        ->whereDate('created_at', '<=',  $date->endOfDay() );
+        return $query->where('created_at', '>=',  $date->startOfDay() )
+        ->where('created_at', '<=',  $date->endOfDay() );
     }
 
 
@@ -283,8 +283,8 @@ trait TimeDiff {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
-        return $query->whereDate('created_at', '>=',  $date->startOfWeek() )
-            ->whereDate('created_at', '<=',  $date->copy()->endOfWeek() );
+        return $query->where('created_at', '>=',  $date->startOfWeek() )
+            ->where('created_at', '<=',  $date->copy()->endOfWeek() );
     }
 
 
@@ -298,8 +298,8 @@ trait TimeDiff {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
-        return $query->whereDate('created_at', '>=',  $date->startOfMonth() )
-            ->whereDate('created_at', '<=',  $date->copy()->endOfMonth() );
+        return $query->where('created_at', '>=',  $date->startOfMonth() )
+            ->where('created_at', '<=',  $date->copy()->endOfMonth() );
     }
 
     /**
@@ -371,7 +371,7 @@ trait TimeDiff {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeUpdatedSinceWeek($query) {
-        return $query->whereDate('updated_at', '>=',  Carbon::now()->subDays(7));
+        return $query->where('updated_at', '>=',  Carbon::now()->subDays(7));
     }
 
     /**
@@ -383,7 +383,7 @@ trait TimeDiff {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCreatedHoursAgo($query, $hours=3) {
-        return $query->whereDate('created_at', '>=',  Carbon::now()->subHours($hours));
+        return $query->where('created_at', '>=',  Carbon::now()->subHours($hours));
     }
 
     /**
@@ -395,7 +395,7 @@ trait TimeDiff {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCreatedMinutesAgo($query, $mins=3) {
-        return $query->whereDate('created_at', '>=',  Carbon::now()->subMinutes($mins));
+        return $query->where('created_at', '>=',  Carbon::now()->subMinutes($mins));
     }
 
 
@@ -408,8 +408,8 @@ trait TimeDiff {
         $date = now()->$subFn($subtract);
 
         return $query->where(function($query2) use($date, $startFn, $endFn, $field) {
-            return $query2->whereDate($field, '>=',  $date->$startFn() )
-                ->whereDate($field, '<=',  $date->copy()->$endFn() );
+            return $query2->where($field, '>=',  $date->$startFn() )
+                ->where($field, '<=',  $date->copy()->$endFn() );
         });
     }
 
@@ -420,40 +420,40 @@ trait TimeDiff {
     public function scopeHourly($query, $hours=0) {
         $date = now()->subHours($hours);
         return $query->where(function($query2) use($date) {
-            return $query2->whereDate('created_at', '>=',  $date->startOfHour() )
-                ->whereDate('created_at', '<=',  $date->copy()->endOfHour() );
+            return $query2->where('created_at', '>=',  $date->startOfHour() )
+                ->where('created_at', '<=',  $date->copy()->endOfHour() );
         });
     }
 
     public function scopeDaily($query, $days=0) {
         $date = now()->subDays($days);
         return $query->where(function($query2) use($date) {
-            return $query2->whereDate('created_at', '>=',  $date->startOfDay() )
-                ->whereDate('created_at', '<=',  $date->copy()->endOfDay() );
+            return $query2->where('created_at', '>=',  $date->startOfDay() )
+                ->where('created_at', '<=',  $date->copy()->endOfDay() );
         });
     }
 
     public function scopeWeekly($query, $weeks=0) {
         $date = now()->subWeeks($weeks);
         return $query->where(function($query2) use($date) {
-            return $query2->whereDate('created_at', '>=',  $date->startOfWeek() )
-                ->whereDate('created_at', '<=',  $date->copy()->endOfWeek() );
+            return $query2->where('created_at', '>=',  $date->startOfWeek() )
+                ->where('created_at', '<=',  $date->copy()->endOfWeek() );
         });
     }
 
     public function scopeMonthly($query, $months=0) {
         $date = now()->subMonths($months);
         return $query->where(function($query2) use($date) {
-            return $query2->whereDate('created_at', '>=',  $date->startOfMonth() )
-                ->whereDate('created_at', '<=',  $date->copy()->endOfMonth() );
+            return $query2->where('created_at', '>=',  $date->startOfMonth() )
+                ->where('created_at', '<=',  $date->copy()->endOfMonth() );
         });
     }
 
     public function scopeYearly($query, $months=0) {
         $date = now()->subYears($months);
         return $query->where(function($query2) use($date) {
-            return $query2->whereDate('created_at', '>=',  $date->startOfYear() )
-                ->whereDate('created_at', '<=',  $date->copy()->endOfYear() );
+            return $query2->where('created_at', '>=',  $date->startOfYear() )
+                ->where('created_at', '<=',  $date->copy()->endOfYear() );
         });
     }
 
