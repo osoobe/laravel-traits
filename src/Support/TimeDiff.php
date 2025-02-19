@@ -268,8 +268,8 @@ trait TimeDiff {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
-        return $query->where('created_at', '>=',  $date->startOfDay() )
-        ->where('created_at', '<=',  $date->endOfDay() );
+        return $query->where('created_at', '>=',  $date->copy()->startOfDay() )
+        ->where('created_at', '<=',  $date->copy()->endOfDay() );
     }
 
 
@@ -283,7 +283,7 @@ trait TimeDiff {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
-        return $query->where('created_at', '>=',  $date->startOfWeek() )
+        return $query->where('created_at', '>=',  $date->copy()->startOfWeek() )
             ->where('created_at', '<=',  $date->copy()->endOfWeek() );
     }
 
@@ -298,7 +298,7 @@ trait TimeDiff {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
-        return $query->where('created_at', '>=',  $date->startOfMonth() )
+        return $query->where('created_at', '>=',  $date->copy()->startOfMonth() )
             ->where('created_at', '<=',  $date->copy()->endOfMonth() );
     }
 
