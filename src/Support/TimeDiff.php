@@ -279,12 +279,12 @@ trait TimeDiff {
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeCreatedWeek($query, Carbon $date=null) {
+    public function scopeCreatedWeek($query, ?Carbon $date=null) {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
-        return $query->where('created_at', '>=',  $date->copy()->startOfWeek()->startOfDay() )
-            ->where('created_at', '<=',  $date->copy()->endOfWeek()->endOfDay() );
+        return $query->where('created_at', '>=',  $date->copy()->locale(config('app.locale', 'en'))->startOfWeek()->startOfDay() )
+            ->where('created_at', '<=',  $date->copy()->locale(config('app.locale', 'en'))->endOfWeek()->endOfDay() );
     }
 
 
@@ -294,7 +294,7 @@ trait TimeDiff {
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeCreatedMonth($query, Carbon $date=null) {
+    public function scopeCreatedMonth($query, ?Carbon $date=null) {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
@@ -436,8 +436,8 @@ trait TimeDiff {
     public function scopeWeekly($query, $weeks=0) {
         $date = now()->subWeeks($weeks);
         return $query->where(function($query2) use($date) {
-            return $query2->where('created_at', '>=',  $date->startOfWeek() )
-                ->where('created_at', '<=',  $date->copy()->endOfWeek() );
+            return $query2->where('created_at', '>=',  $date->copy()->locale(config('app.locale', 'en'))->startOfWeek() )
+                ->where('created_at', '<=',  $date->copy()->locale(config('app.locale', 'en'))->endOfWeek() );
         });
     }
 
