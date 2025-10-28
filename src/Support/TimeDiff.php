@@ -254,7 +254,7 @@ trait TimeDiff {
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCreatedToday($query) {
-        return $query->where('created_at', '>=',  Carbon::now()->startOfDay() );
+        return $query->createdDate(Carbon::now());
     }
 
 
@@ -264,7 +264,7 @@ trait TimeDiff {
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeCreatedDate($query, Carbon $date=null) {
+    public function scopeCreatedDate($query, ?Carbon $date=null) {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
@@ -283,8 +283,8 @@ trait TimeDiff {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
-        return $query->where('created_at', '>=',  $date->copy()->startOfWeek() )
-            ->where('created_at', '<=',  $date->copy()->endOfWeek() );
+        return $query->where('created_at', '>=',  $date->copy()->startOfWeek()->startOfDay() )
+            ->where('created_at', '<=',  $date->copy()->endOfWeek()->endOfDay() );
     }
 
 
@@ -298,8 +298,8 @@ trait TimeDiff {
         if ( empty($date) ) {
             $date = Carbon::now();
         }
-        return $query->where('created_at', '>=',  $date->copy()->startOfMonth() )
-            ->where('created_at', '<=',  $date->copy()->endOfMonth() );
+        return $query->where('created_at', '>=',  $date->copy()->startOfMonth()->startOfDay() )
+            ->where('created_at', '<=',  $date->copy()->endOfMonth()->endOfDay() );
     }
 
     /**
