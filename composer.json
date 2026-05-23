@@ -1,10 +1,13 @@
 {
     "name": "osoobe/laravel-traits",
-    "description": "A description for laravel-traits.",
-    "type": "package",
+    "description": "A collection of reusable Laravel Eloquent model traits.",
+    "type": "library",
     "license": "MIT",
     "keywords": [
-        "laravel"
+        "laravel",
+        "traits",
+        "eloquent",
+        "models"
     ],
     "authors": [
         {
@@ -13,7 +16,7 @@
         }
     ],
     "require": {
-        "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0",
+        "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
         "osoobe/laravel-utilities": "*"
     },
     "autoload": {
@@ -23,7 +26,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Osoobe\\LaravelTraits\\Tests\\": "tests"
+            "Osoobe\\LaravelTraits\\Tests\\": "tests/",
+            "App\\": "tests/Stubs/"
         }
     },
     "scripts": {
@@ -37,6 +41,6 @@
         }
     },
     "require-dev": {
-        "orchestra/testbench": "^6.0"
+        "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0"
     }
 }

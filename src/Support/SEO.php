@@ -28,7 +28,8 @@ trait SEO {
      * @return string
      */
     public function getSEODescriptionAttribute() {
-        $subject = array_pop(explode("\\", get_class($this)));
+        $parts = explode("\\", get_class($this));
+        $subject = array_pop($parts);
         $subject = Str::ucsnake(Str::pluralStudly($subject), " ");
         $app_name = config('app.name');
         return "Check out $this->seo_title and other $subject on $app_name";
